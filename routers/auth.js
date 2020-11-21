@@ -8,7 +8,7 @@ var passport=require("passport");
 
 
  
-//only for the doctor!//here we need to handle that the user name will by uniequ and also the password
+//only for the doctor!//here we need to handle that the user name will by unique and also the password
  router.post("/register", async (req,res) =>{
       var username=req.body.username
       if(!checkValidUserName(username)){
