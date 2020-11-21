@@ -9,52 +9,46 @@ var passport=require("passport");
 
  
 //only for the doctor!//here we need to handle that the user name will by uniequ and also the password
- router.post("/register",function(req,res){
-     var username=req.body.username;
-     var password=req.body.password;
-     var newUser={username:username,password:password};
-     User.create(newUser,function(err,newUser){
-      if (err){
-          console.log(err);
-      }else{
-      console.log("cerate new user "); 
-      res.json("register new user")
+ router.post("/register", async (req,res) =>{
+      var username=req.body.username
+      if(!checkValidUserName(username)){
+        res.json("eror  new user")
+        throw new Error('eror user name')
       }
-        });
-     });  
-
+     var password=req.body.password;
+     const newUser=new User({username:username,password:password});
+     const registerUser=await User.register(newUser,password);
+     console.log(registerUser)
+     res.json("register new user")
+    })
+     
 //create new doctor 
- router.post("/register/doctor",function(req,res){
-      var doctorUserName=req.body.username;
+ router.post("/register/doctor",async (req,res)=>{
+      var doctorUsername=req.body.username;
+      if(!checkValidUserName(doctorUsername)){
+        res.json("eror  new user")
+        throw new Error('eror user name')
+      }
       var doctorPassword=req.body.password;
-      var newDoctor={username:doctorUserName,password:doctorPassword};
-      Doctor.create(newDoctor,function(err,newDocto){
-       if (err){
-           console.log(err);
-       }else{
-       res.json("register new doctor ")
-       }
-         });
-      });  
-
+      const  newDoctor=new Doctor({username:doctorUsername,password:doctorPassword});
+      const doctorRegister= await Doctor.register(newDoctor,doctorPassword);
+      console.log(doctorRegister)
+      res.json("register new doctor")
+ })
 
 //create new threapist
-router.post("/register/therapist",function(req,res){
-    var therapistUserName=req.body.username;
+router.post("/register/therapist",async(req,res)=>{
+    var therapistUsername=req.body.username;
+    if(!checkValidUserName(therapistUsername)){
+      res.json("eror  new user")
+      throw new Error('eror user name')
+    }
     var therapistPassword=req.body.password;
-    var newTherapist={username:therapistUserName,password:therapistPassword};
-        Therapist.create(newTherapist,function(err,newTherapis){
-         if (err){
-             console.log(err);
-         }else{
-         console.log("cerate new therapist "); 
-         res.json("register new therapist")
-         }
-           });
-        });  
-      
-
-
+    const  newTherapist=new Therapist({username:therapistUsername,password:therapistPassword});
+        const therapstRegister= await Therapist.register(newTherapist,therapistPassword);
+        console.log(therapstRegister)
+        res.json("register new doctor")
+})
 
 
 //here we get the user from the login screed and check if exsist in the database
@@ -93,3 +87,14 @@ router.get("/login/therapist",async (req,res)=>{
         });
      });
      module.exports = router;
+
+
+
+//Check validation of username 
+function checkValidUserName(username){
+  let isnum = /^\d+$/.test(username);
+  if(!isnum || username.length!=9)
+    return false;
+
+   return true;
+}
