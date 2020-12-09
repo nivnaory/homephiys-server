@@ -8,7 +8,7 @@ var DoctorSchema=new mongoose.Schema({
   username:String,
   password:String,
   name:String,
-  patients:[{
+  paitents:[{
     type:mongoose.Schema.Types.ObjectId,
     ref:'Paitent'
   }]},
