@@ -8,12 +8,12 @@ localStrategy=require("passport-local"),
 Paitent=require("./models/paitent"),
 Doctor=require("./models/doctor"),
 Therapist=require("./models/therapist")
-//Users=require("./models/users")
-
-// Replace the following with your Atlas connection string                                                                                                                                        
-
+                                                                                                                                        
 const { MongoClient } = require("mongodb");
- 
+const uri="mongodb+srv://nivniv1993:nivniv@homephiys.jtdlb.mongodb.net/test?retryWrites=true&w=majority"
+const client=new MongoClient(uri)
+
+
 // Replace the following with your Atlas connection string                                                                                                                                        
 
 mongoose.set('useNewUrlParser', true);
@@ -46,7 +46,29 @@ passportTherapist.deserializeUser(Therapist.deserializeUser());
 
 
 
-mongoose.connect("mongodb+srv://nivniv1993:nivniv@homephiys.jtdlb.mongodb.net/test?retryWrites=true&w=majority",{
+/*
+async function main()
+{
+try {
+    // Connect to the MongoDB cluster
+     await client.connect();
+    // Make the appropriate DB calls
+    const db = client.db('test');
+    const collection = db.collection('TreatmentType');
+    app.locals.collection = collection;
+    
+    console.log("connect DB");
+
+    } catch (e) {
+        console.error(e);
+    } finally {
+        await client.close();
+    }
+
+    
+}
+*/
+mongoose.connect(uri,{
  useNewUrlParser:true,
  useCreateIndex:true,
  }).then(()=>{
@@ -54,11 +76,14 @@ mongoose.connect("mongodb+srv://nivniv1993:nivniv@homephiys.jtdlb.mongodb.net/te
  }).catch(err =>{
   console.log("Eror",err.message);
  }); 
+
+
+//main().catch(console.error);
 app.use(express.json())
 const userRoute=require("./routers/auth");
-const paitent = require("./models/paitent");
-const passport = require("passport");
+//const paitent = require("./models/paitent");
+//const passport = require("passport");
 app.use("/user",userRoute)
-
+module.exports.connectionDB = client
 
 app.listen(5000, () => console.log("Example app listening on port 5000!"));

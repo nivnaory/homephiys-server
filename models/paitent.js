@@ -7,8 +7,13 @@ const therapist = require("./therapist");
 var PaitentSchema=new mongoose.Schema({
   username:String,
   password:String,
-  //need to add more attr here!
-});
+  name:String,
+  treatmentTypes:[{
+    type:mongoose.Schema.Types.ObjectId,
+    ref:'TreatmentType'
+  }]},
+  {collection : ' Paitents'});
+  //need to add more attr here! highRecord,ScoreList,Access
 
 PaitentSchema.plugin(passportLocalMongoose);
 module.exports=mongoose.model("Paitent",PaitentSchema);

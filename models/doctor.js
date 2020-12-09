@@ -1,4 +1,5 @@
 mongoose=require("mongoose");
+const { Collection } = require("mongoose");
 var passportLocalMongoose=require("passport-local-mongoose");
 
 //define User Entity
@@ -6,8 +7,14 @@ var passportLocalMongoose=require("passport-local-mongoose");
 var DoctorSchema=new mongoose.Schema({
   username:String,
   password:String,
-  //need to add more attr here!
-});
+  name:String,
+  patients:[{
+    type:mongoose.Schema.Types.ObjectId,
+    ref:'Paitent'
+  }]},
+  //collection:'Doctors'
+  //need to add more attr here!\
+   {collection : 'Doctors'});
 
 DoctorSchema.plugin(passportLocalMongoose);
 module.exports=mongoose.model("Doctor",DoctorSchema);

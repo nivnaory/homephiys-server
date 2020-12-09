@@ -1,82 +1,71 @@
 
 var express=require("express");
+const { Mongoose } = require("mongoose");
 var router=express.Router();
-var passportPaitent=require("passport");
 var passportDoctor=require("passport");
 var passportTherapist=require("passport");
-//const paitent = require("../models/paitent");
+const treatmentType = require("../models/treatmentType");
+const paitent = require("../models/paitent");
  Users = require("../models/users");
  Paitent=require("../models/paitent");
  Doctor=require("../models/doctor");
  Therapist=require("../models/therapist");
- 
+ TreatmentType=require("../models/treatmentType")
  
 // Create new Patient only for the doctor!//here we need to handle that the user name will by unique and also the password
- router.post("/register", async (req,res) =>{
-      
-      var username=req.body.username
-      if(!checkValidUserName(username)){
+router.post("/register/paitent", async (req,res) =>{ 
+      if(!checkValidUserName(req.body.username)){
         res.json("eror  new user")
         throw new Error('eror user name')
       }
-     var password=req.body.password;
-     const newPaitent=new Paitent({username:username,password:password});
-     const registerPaitent=await Paitent.register(newPaitent,password);
-     res.json("register new user")
-    })
-     
+     const newPaitent=new Paitent(req.body);
+     mongoose.connection.db.collection("TreatmentType", function(err, collection){
+       console.log("im here!")
+      collection.find({treatmentId:1}).toArray(function(err,treatmentType) {
+        newPaitent.treatmentTypes.push(treatmentType[0]._id)
+       });
+    });
+   const registerPaitent=await Paitent.register(newPaitent,req.body.password);
+   res.json("register new user")
+  });
 //Create new doctor 
- router.post("/register/doctor",async (req,res)=>{
-    
-      var doctorUsername=req.body.username;
-      if(!checkValidUserName(doctorUsername)){
+router.post("/register/doctor",async (req,res)=>{
+      if(!checkValidUserName(req.body.username)){
         res.json("eror  new user")
         throw new Error('eror user name')
       }
-      var doctorPassword=req.body.password;
-      const  newDoctor=new Doctor({username:doctorUsername,password:doctorPassword});
-      const doctorRegister= await Doctor.register(newDoctor,doctorPassword);
-      console.log(doctorRegister)
+      const newDoctor=new Doctor(req.body)
+      const doctorRegister= Doctor.register(newDoctor,req.body.password)
       res.json("register new doctor")
  })
 
 //Create new threapist
 router.post("/register/therapist",async(req,res)=>{
-    var therapistUsername=req.body.username;
-    if(!checkValidUserName(therapistUsername)){
+    if(!checkValidUserName(req.body.username)){
       res.json("eror  new user")
       throw new Error('eror user name')
     }
-    var therapistPassword=req.body.password;
-    const  newTherapist=new Therapist({username:therapistUsername,password:therapistPassword});
-        const therapstRegister= await Therapist.register(newTherapist,therapistPassword);
+    const  newTherapist=new Therapist(req.body);
+        const therapstRegister= await Therapist.register(newTherapist,req.body.password);
         console.log(therapstRegister)
         res.json("register new therapist")
 })
 
-
-
-
-
-
-router.post('/login', function(req, res, next) {
-  passportPaitent.authenticate('local', function (err, user, info) {
-      if (err) { return next(err); }
-      if (!user) 
-      { return res.status(401).send({ success : false, message : 'authentication failed' })};
-      console.log("im here!!")
-      req.login(user, loginErr => {
-        if (loginErr) {
-          return next(loginErr);
-        }
-        return res.send({ success : true, message : 'authentication succeeded' });
-      });      
-    
-    })(req, res, next);;
+router.post('/login/paitent', async function(req, res, next) {
+  Paitent
+.findOne({username:req.body.username}).populate('treatmentTypes')
+.exec(function(err, paitent) {
+    if (err) return handleError(err);
+    if(!paitent){
+     res.json("paitent not found!");
+    }
+    res.json("paitnet found succesfully!")
   });
+});
 
-
+//here we go to database and check if the doctor  exsist on the database 
 router.post("/login/doctor",function(req,res,next){
+ 
   passportDoctor.authenticate('local', function (err, user, info) {
     if (err) { return next(err); }
     if (!user) 
@@ -110,8 +99,20 @@ router.post("/login/therapist",(req,res,next)=>{
  });
 
 
+//Delete User from doctor  only doctor can delete one of the user 
+ router.delete("/paitent/:id",async(req,res) =>{
+  Doctor.findByIdAndRemove(req.params.id,function(err){
+    if (err){
+     res.json("Paitent not found ")
+    } 
+     res.json("Paitnet deletd")
+    })
+ });
      module.exports = router;
 
+
+
+     
 //Check validation of username 
 function checkValidUserName(username){
   let isnum = /^\d+$/.test(username);
@@ -122,15 +123,36 @@ function checkValidUserName(username){
 }
 
 
-/*
-app.get('/login', function(req, res, next) {
-  passport.authenticate('local', function(err, user, info) {
-    if (err) { return next(err); }
-    if (!user) { return res.redirect('/login'); }
-    req.logIn(user, function(err) {
-      if (err) { return next(err); }
-      return res.redirect('/users/' + user.username);
-    });
-  })(req, res, next);
+
+ /*
+   newtreatmentType.type=treatmentType[0].type
+   newtreatmentType.treatmentId=treatmentType[0].treatmentId;
+   newtreatmentType._id=treatmentType[0]._id
+   treatmentType[0].stageList.forEach(function(item,index){
+     const newStage=new Stage()
+     newStage.currentLevel=item.currentLevel;
+     treatmentType[0].stageList[index].exerciseList.forEach(function(item,index){
+       const newExercise= new Exercise()
+       newExercise.name=item.name
+       newExercise.description=item.description
+       newExercise.level=item.level
+       newExercise.exerciseId=item.exerciseId
+      
+       treatmentType[0].stageList[index].exerciseList[index].questions.forEach(function(item,index){
+         newExercise.questions.push(item)
+         
+       });
+       newStage.exerciseList.push(newExercise)
+   });
+   newtreatmentType.stageList.push(newStage)
+       
+       newPaitent.treatmentTypes.push(treatmentType[0]._id)
+       
+  
+      });
+   });
+   
+   const registerPaitent=await Paitent.register(newPaitent,req.body.password);
+   res.json("register new user")
 });
 */

@@ -6,8 +6,13 @@ var passportLocalMongoose=require("passport-local-mongoose");
 var TherapistSchema=new mongoose.Schema({
   username:String,
   password:String,
-  //need to add more attr here!
-});
+  name:String,
+  patients:[{
+    type:mongoose.Schema.Types.ObjectId,
+    ref:'Paitent'
+  }]},
+  {collection : 'Therapists'});
+
 
 TherapistSchema.plugin(passportLocalMongoose);
 module.exports=mongoose.model("Theraphist",TherapistSchema);
