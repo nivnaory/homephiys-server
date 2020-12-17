@@ -19,9 +19,8 @@ const client=new MongoClient(uri)
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useUnifiedTopology',true);
 
-
-
 //only for the paitnet 
+/*
 app.use(passportPaitent.initialize());
 app.use(passportPaitent.session());
 passportPaitent.use( new  localStrategy(Paitent.authenticate()));
@@ -79,11 +78,14 @@ mongoose.connect(uri,{
 
 
 //main().catch(console.error);
-app.use(express.json())
-const userRoute=require("./routers/auth");
+app.use(express.json());
+var usersRoute=require("./routers/auth"),
+  paitentRoute=require("./routers/paitent");
 //const paitent = require("./models/paitent");
 //const passport = require("passport");
-app.use("/user",userRoute)
+app.use("/user",usersRoute);
+app.use("/paitent",paitentRoute);
+
 module.exports.connectionDB = client
 
 app.listen(5000, () => console.log("Example app listening on port 5000!"));

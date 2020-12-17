@@ -31,12 +31,9 @@ router.post("/register/paitent/:id", async (req,res) =>{
         newPaitent.treatmentTypes.push(treatmentType[0]._id)
        });
        
-    });
-      
-   
+    });   
       doctor.patients.push(newPaitent._id);
       doctor.save();
-      console.log("doctor",doctor)
    });
    const newPaitent=new Paitent(req.body);
    const registerPaitent=await Paitent.register(newPaitent,req.body.password);
@@ -68,16 +65,18 @@ router.post("/register/therapist",async(req,res)=>{
 
 
 
-
 router.post('/login/paitent', async function(req, res, next) {
+
   Paitent
-.findOne({username:req.body.username}).populate('treatmentTypes')
+.findOne({username:req.body.username,password:req.body.password})
 .exec(function(err, paitent) {
     if (err) return handleError(err);
-    if(!paitent){
-     res.json("paitent not found!");
+    if(!paitent){ 
+    res.status(400).send();
     }
-    res.json("paitnet found succesfully!")
+
+    res.status(200).send()
+
   });
 });
 
@@ -112,7 +111,7 @@ router.post("/login/therapist",(req,res,next)=>{
 
 //Delete User from doctor  only doctor can delete one of the user 
  router.delete("/paitent/:id",async(req,res) =>{
-  Doctor.findByIdAndRemove(req.params.id,function(err){
+  Paitent.findByIdAndRemove(req.params.id,function(err){
     if (err){
      res.json("Paitent not found ")
     } 
