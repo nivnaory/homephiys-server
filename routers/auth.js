@@ -19,7 +19,7 @@ router.post("/register/paitent/:id", async (req,res) =>{
       if (err){
         res.json(err)
       }
-      console.log("im here!")
+
       if(!checkValidUserName(req.body.username)){
         res.json("eror  new user")
         throw new Error('eror user name')
@@ -66,7 +66,6 @@ router.post("/register/therapist",async(req,res)=>{
 
 
 router.post('/login/paitent', async function(req, res, next) {
-
   Paitent
 .findOne({username:req.body.username,password:req.body.password})
 .exec(function(err, paitent) {
@@ -74,6 +73,7 @@ router.post('/login/paitent', async function(req, res, next) {
     if(!paitent){ 
     res.status(400).send();
     }
+     //send the id to the flutter 
 
     res.status(200).send()
 
