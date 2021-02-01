@@ -11,7 +11,12 @@ var PaitentSchema=new mongoose.Schema({
   treatmentTypes:[{
     type:mongoose.Schema.Types.ObjectId,
     ref:'TreatmentType'
-  }]},
+  }],
+  scoreList:[{
+    type:mongoose.Schema.Types.ObjectId,
+    ref:'Score'
+    }],
+   },
   {collection : ' Paitents'});
   //need to add more attr here! highRecord,ScoreList,Access
 

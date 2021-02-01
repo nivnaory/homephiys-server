@@ -6,6 +6,7 @@ var Exercisechema=new mongoose.Schema({
   description:String,
   level:Number,
   exerciseId:Number,
+  urlAdress:String,
   questions:[{
       type:String
   }]

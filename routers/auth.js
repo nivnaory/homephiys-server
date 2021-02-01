@@ -27,7 +27,7 @@ router.post("/register/paitent/:id", async (req,res) =>{
    
      mongoose.connection.db.collection("TreatmentType", function(err, collection){
       collection.find({treatmentId:1}).toArray(function(err,treatmentType) {
-        
+    
         newPaitent.treatmentTypes.push(treatmentType[0]._id)
        });
        
@@ -66,7 +66,8 @@ router.post("/register/therapist",async(req,res)=>{
 
 
 router.post('/login/paitent', async function(req, res, next) {
-  Paitent
+console.log("im here!")
+Paitent
 .findOne({username:req.body.username,password:req.body.password})
 .exec(function(err, paitent) {
     if (err) return handleError(err);
@@ -132,37 +133,3 @@ function checkValidUserName(username){
    return true;
 }
 
-
-
- /*
-   newtreatmentType.type=treatmentType[0].type
-   newtreatmentType.treatmentId=treatmentType[0].treatmentId;
-   newtreatmentType._id=treatmentType[0]._id
-   treatmentType[0].stageList.forEach(function(item,index){
-     const newStage=new Stage()
-     newStage.currentLevel=item.currentLevel;
-     treatmentType[0].stageList[index].exerciseList.forEach(function(item,index){
-       const newExercise= new Exercise()
-       newExercise.name=item.name
-       newExercise.description=item.description
-       newExercise.level=item.level
-       newExercise.exerciseId=item.exerciseId
-      
-       treatmentType[0].stageList[index].exerciseList[index].questions.forEach(function(item,index){
-         newExercise.questions.push(item)
-         
-       });
-       newStage.exerciseList.push(newExercise)
-   });
-   newtreatmentType.stageList.push(newStage)
-       
-       newPaitent.treatmentTypes.push(treatmentType[0]._id)
-       
-  
-      });
-   });
-   
-   const registerPaitent=await Paitent.register(newPaitent,req.body.password);
-   res.json("register new user")
-});
-*/
