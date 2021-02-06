@@ -2,18 +2,58 @@
 var express=require("express");
 const { Mongoose } = require("mongoose");
 var router=express.Router();
-var passportDoctor=require("passport");
 var passportTherapist=require("passport");
-const treatmentType = require("../models/treatmentType");
-const paitent = require("../models/paitent");
  Users = require("../models/users");
  Paitent=require("../models/paitent");
  Doctor=require("../models/doctor");
  Therapist=require("../models/therapist");
  TreatmentType=require("../models/treatmentType")
  
+ router.post("/register/paitent/:id" ,async (req,res) => {
+  const newPaitent=new Paitent(req.body);
+   Doctor.findById(req.params.id,function (err,doctor)
+  {
+  if (err){
+    res.json(err)
+  }
+
+  if(!checkValidUserName(req.body.username)){
+    res.json("eror  new user")
+    throw new Error('eror user name')
+  }
+
+// get treatment type as arry
+ mongoose.connection.db.collection("TreatmentType", function(err, collection){
+  collection.find({treatmentId:1}).toArray(function(err,treatmentType) {
+    newPaitent.treatmentTypes.push(treatmentType[0]._id)
+    
+   });
+   
+});  
+ 
+mongoose.connection.db.collection("Protocols", function(err, collection){
+  collection.findOne({protocolId:1},function(err,newProtocol) {
+        
+       newPaitent.protocol=newProtocol._id
+       
+   });
+  });
+
+ 
+  doctor.paitents.push(newPaitent._id);
+  doctor.save();
+});
+ const paitentRegister=  await Paitent.register(newPaitent,req.body.password)
+ console.log("im here 4"+paitentRegister)
+ res.json("register new user")
+
+});
+
+
+/*
 // Create new Patient only for the doctor!//here we need to handle that the user name will by unique and also the password
-router.post("/register/paitent/:id", async (req,res) =>{ 
+router.post("/register/paitent/:id",function (req,res) { 
+      const newPaitent=new Paitent(req.body);
        Doctor.findById(req.params.id,function (err,doctor)
       {
       if (err){
@@ -24,22 +64,36 @@ router.post("/register/paitent/:id", async (req,res) =>{
         res.json("eror  new user")
         throw new Error('eror user name')
       }
-   
+    
+    // get treatment type as arry
      mongoose.connection.db.collection("TreatmentType", function(err, collection){
       collection.find({treatmentId:1}).toArray(function(err,treatmentType) {
-    
         newPaitent.treatmentTypes.push(treatmentType[0]._id)
+        console.log(newPaitent)
        });
        
-    });   
-      doctor.patients.push(newPaitent._id);
+    });  
+     
+    mongoose.connection.db.collection("Protocols", function(err, collection){
+      collection.findOne({protocolId:1},function(err,newProtocol) {
+           
+           newPaitent.protocol.push(newProtocol._id)
+           console.log(newPaitent)
+          
+       });
+      });
+    
+     
+      doctor.paitents.push(newPaitent._id);
       doctor.save();
+      console.log("register",newPaitent)
+      const paitentRegister=  Paitent.register(newPaitent,req.body.password)
+      res.json("register new user")
    });
-   const newPaitent=new Paitent(req.body);
-   const registerPaitent=await Paitent.register(newPaitent,req.body.password);
-   res.json("register new user")
+  
 
 });
+*/
 //Create new doctor 
 router.post("/register/doctor",async (req,res)=>{
       if(!checkValidUserName(req.body.username)){
@@ -66,7 +120,7 @@ router.post("/register/therapist",async(req,res)=>{
 
 
 router.post('/login/paitent', async function(req, res, next) {
-console.log("im here!")
+
 Paitent
 .findOne({username:req.body.username,password:req.body.password})
 .exec(function(err, paitent) {
