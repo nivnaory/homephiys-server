@@ -1,8 +1,10 @@
 var express=require("express");
 const { Mongoose } = require("mongoose");
 const Protocol = require("../models/Protocol");
+const treatmentProgress = require("../models/treatmentProgress");
 var router=express.Router();
 Paitent=require("../models/paitent");
+
 
 
 router.get("/:username",async (req,res)=>
@@ -11,11 +13,22 @@ router.get("/:username",async (req,res)=>
   .findOne({username:req.params.username}).populate("treatmentTypes").populate("protocol")
        res.json({ username:paitent.username,password:paitent.password,name:paitent.name,
         treatmentType:paitent.treatmentTypes,protocol:paitent.protocol});
+        //niv
       res.status(200)
     });
 
 
-
+  router.post("/:username/report",async (req,res)=>{
+     //create new reportt
+     const paitent=await Paitent.findOne({username:req.params.username})
+     paitent.reports.push({stageLevel:req.body.stageLevel,
+    exerciseLevel:req.body.exerciseLevel,
+    questions:req.body.questions,
+    answers:req.body.answers,
+    openAnswer:req.body.openAnswer});
+    paitent.save()
+ });
+ 
 router.put("/:username/highScore",function(req,res){
   Paitent
   .findOne({username:req.params.username}).populate("treatmentTypes")
