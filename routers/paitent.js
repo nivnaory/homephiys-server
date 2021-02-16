@@ -9,32 +9,12 @@ router.get("/:username",async (req,res)=>
 {
   const paitent=await Paitent
   .findOne({username:req.params.username}).populate("treatmentTypes").populate("protocol")
-       console.log(paitent); 
-
        res.json({ username:paitent.username,password:paitent.password,name:paitent.name,
         treatmentType:paitent.treatmentTypes,protocol:paitent.protocol});
       res.status(200)
     });
 
 
-/*
-router.get("/:username",function(req,res){
-  Paitent
-  .findOne({username:req.params.username}).populate("treatmentTypes")
-  .exec(function(err, paitent) {
-      if (err) return handleError(err);
-
-
-      if(!paitent){ 
-      res.status(400).send();
-      }
-       res.json({ username:paitent.username,password:paitent.password,name:paitent.name,
-        treatmentType:paitent.treatmentTypes});
-      res.status(200)
-    });
-});
-
-*/
 
 router.put("/:username/highScore",function(req,res){
   Paitent
