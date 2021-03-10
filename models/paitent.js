@@ -1,6 +1,5 @@
 mongoose=require("mongoose");
 var passportLocalMongoose=require("passport-local-mongoose");
-const treatmentProgress = require("../models/treatmentProgress");
 
 
 mongoose=require("mongoose");
