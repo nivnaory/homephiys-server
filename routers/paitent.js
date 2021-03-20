@@ -35,6 +35,7 @@ router.post("/:username/report", async(req, res) => {
         openAnswer: req.body.openAnswer,
         totelScore: req.body.totalScore
     });
+    console.log("im here!");
     paitent.save()
 
 });
