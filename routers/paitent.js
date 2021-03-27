@@ -15,7 +15,8 @@ router.get("/:username", async(req, res) => {
         password: paitent.password,
         name: paitent.name,
         treatmentType: paitent.treatmentTypes,
-        protocol: paitent.protocol
+        protocol: paitent.protocol,
+        access: paitent.accesses
             //reports:paitnetn.reports
     });
     //
