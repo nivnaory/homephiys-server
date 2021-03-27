@@ -17,8 +17,8 @@ var StageSchema = new mongoose.Schema({
     currentLevel: Number,
     exerciseList: [Exercisechema],
     scoreForCurrentStage: Number,
-
 });
+
 var TreatmentTypeSchema = new mongoose.Schema({
     type: String,
     treatmentId: Number,

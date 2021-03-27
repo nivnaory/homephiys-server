@@ -2,7 +2,7 @@ var express = require("express");
 const { Mongoose } = require("mongoose");
 var router = express.Router();
 var passportTherapist = require("passport");
-Users = require("../models/users");
+const paitent = require("../models/paitent");
 Paitent = require("../models/paitent");
 Doctor = require("../models/doctor");
 Therapist = require("../models/therapist");
@@ -10,6 +10,7 @@ TreatmentType = require("../models/treatmentType")
 
 router.post("/register/paitent/:id", async(req, res) => {
     const newPaitent = new Paitent(req.body);
+
     Doctor.findById(req.params.id, function(err, doctor) {
         if (err) {
             res.json(err)
@@ -21,25 +22,25 @@ router.post("/register/paitent/:id", async(req, res) => {
         }
 
         // get treatment type as arry
+        //need to handle this.
         mongoose.connection.db.collection("TreatmentType", function(err, collection) {
             collection.find({ treatmentId: 1 }).toArray(function(err, treatmentType) {
                 newPaitent.treatmentTypes.push(treatmentType[0]._id)
-
+                initateAccessArray(newPaitent,treatmentType[0].stageList);
+              
             });
 
         });
 
         mongoose.connection.db.collection("Protocols", function(err, collection) {
             collection.findOne({ protocolId: 1 }, function(err, newProtocol) {
-
                 newPaitent.protocol = newProtocol._id
 
             });
         });
-
-
-        doctor.paitents.push(newPaitent._id);
-        doctor.save();
+      
+      doctor.paitents.push(newPaitent._id);
+      doctor.save();
     });
     const paitentRegister = await Paitent.register(newPaitent, req.body.password)
     res.json("register new user")
@@ -65,7 +66,7 @@ router.post("/register/therapist", async(req, res) => {
     }
     const newTherapist = new Therapist(req.body);
     const therapstRegister = await Therapist.register(newTherapist, req.body.password);
-    console.log(therapstRegister)
+  
     res.json("register new therapist")
 })
 
@@ -83,7 +84,7 @@ router.post('/login/paitent', async function(req, res, next) {
             //send the id to the flutter 
 
 
-
+        
             res.status(200).send()
 
         });
@@ -139,3 +140,17 @@ function checkValidUserName(username) {
 
     return true;
 }
+function initateAccessArray(paitent,paitentStageList)
+{    
+   for (i =0;i<paitentStageList.length;i++){
+           if (i==0)
+            paitent.accesses.push({stageBool:true,
+            exerciseBool:[true,false,false]
+            });          
+       else
+       paitent.accesses.push({stageBool:false,
+        exerciseBool:[false,false,false]
+        }); 
+     }
+}
+   
