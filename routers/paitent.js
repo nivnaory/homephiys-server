@@ -25,8 +25,7 @@ router.get("/:username", async(req, res) => {
 
 
 router.post("/:username/report", async(req, res) => {
-    //create new reportt
-
+    //create new report
     const paitent = await Paitent.findOne({ username: req.params.username })
     paitent.reports.push({
         stageLevel: req.body.stageLevel,
@@ -36,11 +35,21 @@ router.post("/:username/report", async(req, res) => {
         openAnswer: req.body.openAnswer,
         totelScore: req.body.totalScore
     });
-    console.log("im here!");
+
     paitent.save()
 
 });
 
+router.post("/:username/access", async(req, res) => {
+    console.log("im here daniel dt");
+    const paitent = await Paitent.findOne({ username: req.params.username })
+    var exerciseLevel = req.body.exerciseLevel;
+    console.log(paitent);
+    // paitent.accesses[req.body.stageLevel].exerciseBool.set(1, true);
+    paitent.save()
+
+
+});
 router.put("/:username/highScore", function(req, res) {
     Paitent
         .findOne({ username: req.params.username }).populate("treatmentTypes")
