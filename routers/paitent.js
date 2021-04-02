@@ -1,5 +1,6 @@
 var express = require("express");
 const { Mongoose } = require("mongoose");
+const paitent = require("../models/paitent");
 const Protocol = require("../models/Protocol");
 
 var router = express.Router();
@@ -41,12 +42,35 @@ router.post("/:username/report", async(req, res) => {
 });
 
 router.post("/:username/access", async(req, res) => {
-    console.log("im here daniel dt");
-    const paitent = await Paitent.findOne({ username: req.params.username })
-    var exerciseLevel = req.body.exerciseLevel;
-    console.log(paitent);
-    // paitent.accesses[req.body.stageLevel].exerciseBool.set(1, true);
-    paitent.save()
+    console.log("im here Niv the dick");
+
+
+    const accessesIndex = req.body.stageLevel;
+    const exerciseBoolIndex = req.body.exerciseLevel;
+    const isStageFinish = req.body.isFinished;
+    console.log(isStageFinish)
+
+    if (isStageFinish == true) {
+        console.log("i'm here in isStageFinish")
+        const update = {
+            $set: {
+                [`accesses.${accessesIndex}.stageBool`]: true
+
+            }
+        };
+        await Paitent.updateOne({ username: req.params.username }, update);
+    }
+
+
+    const update = {
+        $set: {
+            [`accesses.${accessesIndex}.exerciseBool.${exerciseBoolIndex}`]: true
+        }
+    };
+    await Paitent.updateOne({ username: req.params.username }, update);
+
+    console.log("i'm here Final")
+
 
 
 });
@@ -59,12 +83,9 @@ router.put("/:username/highScore", function(req, res) {
                 res.status(400).send();
             }
             console.log(paitent)
-                //console.log(paitent.scoreList[0].highScore)
-                /*need to update the scoreList in the current exercise 
-       how to do it:
-      find on the scoreList the exerciseId from the paitnet/treatmentType/staeg/exercise/exerciseId
 
-     */
+
+
         });
 })
 
