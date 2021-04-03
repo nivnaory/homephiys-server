@@ -10,17 +10,19 @@ Paitent = require("../models/paitent");
 
 router.get("/:username", async(req, res) => {
     const paitent = await Paitent
-        .findOne({ username: req.params.username }).populate("treatmentTypes").populate("protocol")
+        .findOne({ username: req.params.username }).populate({ path: "treatmentType", populate: { path: "protocol" } })
     res.json({
         username: paitent.username,
         password: paitent.password,
         name: paitent.name,
-        treatmentType: paitent.treatmentTypes,
-        protocol: paitent.protocol,
-        access: paitent.accesses
-            //reports:paitnetn.reports
+        treatmentType: paitent.treatmentType,
+        access: paitent.accesses,
+        protocol: paitent.treatmentType.protocol,
+
+        //reports:paitnetn.reports
     });
-    //
+    console.log(paitent)
+        //
     res.status(200)
 });
 
@@ -45,7 +47,7 @@ router.post("/:username/access", async(req, res) => {
     const accessesIndex = req.body.stageLevel;
     const exerciseBoolIndex = req.body.exerciseLevel;
     const isStageFinish = req.body.isFinished;
-  
+
     if (isStageFinish == true) {
         const update = {
             $set: {
