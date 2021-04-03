@@ -22,23 +22,24 @@ router.post("/register/paitent/:id", async(req, res) => {
         }
 
         // get treatment type as arry
-        //need to handle this.
+        //need to handle this  the foundation of the treatment type. 
         mongoose.connection.db.collection("TreatmentType", function(err, collection) {
-            collection.find({ treatmentId: 1 }).toArray(function(err, treatmentType) {
-                newPaitent.treatmentTypes.push(treatmentType[0]._id)
-                initateAccessArray(newPaitent,treatmentType[0].stageList);
+            collection.findOne({ treatmentId: 1 },function(err, treatmentType) {
+                newPaitent.treatmentType=treatmentType._id;
+                initateAccessArray(newPaitent,treatmentType.stageList);
               
             });
 
         });
-
+        
+        /*
         mongoose.connection.db.collection("Protocols", function(err, collection) {
             collection.findOne({ protocolId: 1 }, function(err, newProtocol) {
                 newPaitent.protocol = newProtocol._id
 
             });
         });
-      
+      */
       doctor.paitents.push(newPaitent._id);
       doctor.save();
     });

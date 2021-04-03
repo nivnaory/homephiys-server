@@ -26,6 +26,12 @@ var TreatmentTypeSchema = new mongoose.Schema({
     stageList: [
         StageSchema,
     ],
+
+    protocol: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Protocol'
+    },
+
 }, { collection: 'TreatmentType' });
 //need to add more attr
 module.exports = mongoose.model("TreatmentType", TreatmentTypeSchema);

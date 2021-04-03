@@ -33,15 +33,10 @@ var PaitentSchema = new mongoose.Schema({
     username: String,
     password: String,
     name: String,
-    protocol: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Protocol'
-    },
-
-    treatmentTypes: [{
+    treatmentType: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'TreatmentType'
-    }],
+    },
 
     accesses: [AccessSchema],
     reports: [ReportSchema],

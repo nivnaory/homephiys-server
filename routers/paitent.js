@@ -42,16 +42,11 @@ router.post("/:username/report", async(req, res) => {
 });
 
 router.post("/:username/access", async(req, res) => {
-    console.log("im here Niv the dick");
-
-
     const accessesIndex = req.body.stageLevel;
     const exerciseBoolIndex = req.body.exerciseLevel;
     const isStageFinish = req.body.isFinished;
-    console.log(isStageFinish)
-
+  
     if (isStageFinish == true) {
-        console.log("i'm here in isStageFinish")
         const update = {
             $set: {
                 [`accesses.${accessesIndex}.stageBool`]: true
