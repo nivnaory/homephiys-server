@@ -12,6 +12,7 @@ var passportLocalMongoose = require("passport-local-mongoose");
 const ReportSchema = new mongoose.Schema({
     stageLevel: Number,
     exerciseLevel: Number,
+    score: Number,
     questions: [{
         type: String
     }],
@@ -19,7 +20,7 @@ const ReportSchema = new mongoose.Schema({
         type: Number
     }],
     openAnswer: String,
-    totalScore: Number
+   
 });
 
 

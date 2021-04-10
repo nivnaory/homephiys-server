@@ -11,13 +11,15 @@ Paitent = require("../models/paitent");
 router.get("/:username", async(req, res) => {
     const paitent = await Paitent
         .findOne({ username: req.params.username }).populate({ path: "treatmentType", populate: { path: "protocol" } })
+        console.log(paitent);
     res.json({
         username: paitent.username,
         password: paitent.password,
         name: paitent.name,
         treatmentType: paitent.treatmentType,
-        access: paitent.accesses,
+        accesses: paitent.accesses,
         protocol: paitent.treatmentType.protocol,
+        reports:paitent.reports
 
         //reports:paitnetn.reports
     });
@@ -30,13 +32,15 @@ router.get("/:username", async(req, res) => {
 router.post("/:username/report", async(req, res) => {
     //create new report
     const paitent = await Paitent.findOne({ username: req.params.username })
+    console.log(req.body);
     paitent.reports.push({
         stageLevel: req.body.stageLevel,
         exerciseLevel: req.body.exerciseLevel,
+        score: req.body.score,
         questions: req.body.questions,
         answers: req.body.answers,
         openAnswer: req.body.openAnswer,
-        totelScore: req.body.totalScore
+       
     });
 
     paitent.save()
