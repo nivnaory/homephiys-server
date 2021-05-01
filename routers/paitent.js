@@ -11,7 +11,7 @@ Paitent = require("../models/paitent");
 router.get("/:username", async(req, res) => {
     const paitent = await Paitent
         .findOne({ username: req.params.username }).populate({ path: "treatmentType", populate: { path: "protocol" } })
-        console.log(paitent);
+
     res.json({
         username: paitent.username,
         password: paitent.password,
@@ -19,12 +19,11 @@ router.get("/:username", async(req, res) => {
         treatmentType: paitent.treatmentType,
         accesses: paitent.accesses,
         protocol: paitent.treatmentType.protocol,
-        reports:paitent.reports
+        reports: paitent.reports
 
         //reports:paitnetn.reports
     });
-    console.log(paitent)
-        //
+    //
     res.status(200)
 });
 
@@ -32,7 +31,6 @@ router.get("/:username", async(req, res) => {
 router.post("/:username/report", async(req, res) => {
     //create new report
     const paitent = await Paitent.findOne({ username: req.params.username })
-    console.log(req.body);
     paitent.reports.push({
         stageLevel: req.body.stageLevel,
         exerciseLevel: req.body.exerciseLevel,
@@ -40,14 +38,15 @@ router.post("/:username/report", async(req, res) => {
         questions: req.body.questions,
         answers: req.body.answers,
         openAnswer: req.body.openAnswer,
-       
+
     });
 
     paitent.save()
 
 });
 
-router.post("/:username/access", async(req, res) => {
+router.post("/:username/accesses", async(req, res) => {
+    console.log("im here");
     const accessesIndex = req.body.stageLevel;
     const exerciseBoolIndex = req.body.exerciseLevel;
     const isStageFinish = req.body.isFinished;
@@ -83,7 +82,6 @@ router.put("/:username/highScore", function(req, res) {
             if (!paitent) {
                 res.status(400).send();
             }
-            console.log(paitent)
 
 
 

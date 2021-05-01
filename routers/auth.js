@@ -1,48 +1,37 @@
 var express = require("express");
 const { Mongoose } = require("mongoose");
+
 var router = express.Router();
 var passportTherapist = require("passport");
-const paitent = require("../models/paitent");
+//const paitent = require("../models/paitent");
+
 Paitent = require("../models/paitent");
 Doctor = require("../models/doctor");
 Therapist = require("../models/therapist");
 TreatmentType = require("../models/treatmentType")
 
-router.post("/register/paitent/:id", async(req, res) => {
+
+router.post("/register/paitent/", async(req, res) => {
+    console.log("niv the dick")
     const newPaitent = new Paitent(req.body);
+    newPaitent
+    if (!checkValidUserName(req.body.username)) {
+        res.json("error  new user")
+        throw new Error('error user name')
+    }
 
-    Doctor.findById(req.params.id, function(err, doctor) {
-        if (err) {
-            res.json(err)
-        }
-
-        if (!checkValidUserName(req.body.username)) {
-            res.json("eror  new user")
-            throw new Error('eror user name')
-        }
-
-        // get treatment type as arry
-        //need to handle this  the foundation of the treatment type. 
-        mongoose.connection.db.collection("TreatmentType", function(err, collection) {
-            collection.findOne({ treatmentId: 1 },function(err, treatmentType) {
-                newPaitent.treatmentType=treatmentType._id;
-                initateAccessArray(newPaitent,treatmentType.stageList);
-              
-            });
+    // get treatment type as array
+    //need to handle this  the foundation of the treatment type. 
+    mongoose.connection.db.collection("TreatmentType", function(err, collection) {
+        collection.findOne({ treatmentId: 1 }, function(err, treatmentType) {
+            newPaitent.treatmentType = treatmentType._id;
+            initateAccessArray(newPaitent, treatmentType.stageList);
 
         });
-        
-        /*
-        mongoose.connection.db.collection("Protocols", function(err, collection) {
-            collection.findOne({ protocolId: 1 }, function(err, newProtocol) {
-                newPaitent.protocol = newProtocol._id
 
-            });
-        });
-      */
-      doctor.paitents.push(newPaitent._id);
-      doctor.save();
     });
+
+
     const paitentRegister = await Paitent.register(newPaitent, req.body.password)
     res.json("register new user")
 
@@ -67,25 +56,23 @@ router.post("/register/therapist", async(req, res) => {
     }
     const newTherapist = new Therapist(req.body);
     const therapstRegister = await Therapist.register(newTherapist, req.body.password);
-  
+
     res.json("register new therapist")
 })
 
 
 
 router.post('/login/paitent', async function(req, res, next) {
-
     Paitent
         .findOne({ username: req.body.username, password: req.body.password })
         .exec(function(err, paitent) {
+
             if (err) return handleError(err);
             if (!paitent) {
+
                 res.status(400).send();
             }
             //send the id to the flutter 
-
-
-        
             res.status(200).send()
 
         });
@@ -107,7 +94,7 @@ router.post("/login/therapist", (req, res, next) => {
     passportTherapist.authenticate('local', function(err, user, info) {
         if (err) { return next(err); }
         if (!user) { return res.status(401).send({ success: false, message: 'authentication failed' }) };
-        console.log("im here!!")
+
         req.login(user, loginErr => {
             if (loginErr) {
                 return next(loginErr);
@@ -131,8 +118,6 @@ router.delete("/paitent/:id", async(req, res) => {
 module.exports = router;
 
 
-
-
 //Check validation of username 
 function checkValidUserName(username) {
     let isnum = /^\d+$/.test(username);
@@ -141,17 +126,18 @@ function checkValidUserName(username) {
 
     return true;
 }
-function initateAccessArray(paitent,paitentStageList)
-{    
-   for (i =0;i<paitentStageList.length;i++){
-           if (i==0)
-            paitent.accesses.push({stageBool:true,
-            exerciseBool:[true,false,false]
-            });          
-       else
-       paitent.accesses.push({stageBool:false,
-        exerciseBool:[false,false,false]
-        }); 
-     }
+
+function initateAccessArray(paitent, paitentStageList) {
+    for (i = 0; i < paitentStageList.length; i++) {
+        if (i == 0)
+            paitent.accesses.push({
+                stageBool: true,
+                exerciseBool: [true, false, false]
+            });
+        else
+            paitent.accesses.push({
+                stageBool: false,
+                exerciseBool: [false, false, false]
+            });
+    }
 }
-   

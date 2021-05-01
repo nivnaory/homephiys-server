@@ -1,7 +1,6 @@
 mongoose = require("mongoose");
 var passportLocalMongoose = require("passport-local-mongoose");
 
-
 mongoose = require("mongoose");
 const { Collection } = require("mongoose");
 var passportLocalMongoose = require("passport-local-mongoose");
@@ -20,7 +19,7 @@ const ReportSchema = new mongoose.Schema({
         type: Number
     }],
     openAnswer: String,
-   
+
 });
 
 
@@ -34,6 +33,7 @@ var PaitentSchema = new mongoose.Schema({
     username: String,
     password: String,
     name: String,
+    email: String,
     treatmentType: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'TreatmentType'
