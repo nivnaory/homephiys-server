@@ -20,11 +20,16 @@ router.get("/:username", async(req, res) => {
 
 
 router.put("/:username", async(req, res) => {
-
+    console.log(req.body.password);
     const therapist = await Therapist
         .updateOne({ username: req.params.username }, {
             password: req.body.password
         });
+    if (therapist) {
+        res.sendStatus(200);
+    } else {
+        res.sendStatus(400);
+    }
 
 
 });
