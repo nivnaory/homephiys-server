@@ -1,11 +1,11 @@
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
-passportPaitent = require("passport"),
+passportPatient = require("passport"),
     passportDoctor = require("passport"),
     passportTherapist = require("passport"),
     localStrategy = require("passport-local"),
-    Paitent = require("./models/paitent"),
+    Patient = require("./models/patient"),
     Doctor = require("./models/doctor"),
     Therapist = require("./models/therapist")
 
@@ -31,9 +31,11 @@ mongoose.connect(uri, {
 //main().catch(console.error);
 app.use(express.json());
 var usersRoute = require("./routers/auth"),
-    paitentRoute = require("./routers/paitent");
+    patientRoute = require("./routers/patient"),
+    therapistRoute = require("./routers/therapist");
 app.use("/user", usersRoute);
-app.use("/paitent", paitentRoute);
+app.use("/patient", patientRoute);
+app.use("/therapist", therapistRoute);
 
 module.exports.connectionDB = client
 

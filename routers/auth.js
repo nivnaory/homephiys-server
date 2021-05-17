@@ -3,18 +3,18 @@ const { Mongoose } = require("mongoose");
 
 var router = express.Router();
 var passportTherapist = require("passport");
-//const paitent = require("../models/paitent");
 
-Paitent = require("../models/paitent");
+
+Patient = require("../models/patient");
 Doctor = require("../models/doctor");
 Therapist = require("../models/therapist");
 TreatmentType = require("../models/treatmentType")
 
 
-router.post("/register/paitent/", async(req, res) => {
-    console.log("niv the dick")
-    const newPaitent = new Paitent(req.body);
-    newPaitent
+router.post("/register/patient/", async(req, res) => {
+
+    const newPatient = new Patient(req.body);
+
     if (!checkValidUserName(req.body.username)) {
         res.json("error  new user")
         throw new Error('error user name')
@@ -24,51 +24,39 @@ router.post("/register/paitent/", async(req, res) => {
     //need to handle this  the foundation of the treatment type. 
     mongoose.connection.db.collection("TreatmentType", function(err, collection) {
         collection.findOne({ treatmentId: 1 }, function(err, treatmentType) {
-            newPaitent.treatmentType = treatmentType._id;
-            initateAccessArray(newPaitent, treatmentType.stageList);
+            newPatient.treatmentType = treatmentType._id;
+            initateAccessArray(newPatient, treatmentType.stageList);
 
         });
 
     });
 
 
-    const paitentRegister = await Paitent.register(newPaitent, req.body.password)
+    const patientRegister = await Patient.register(newPatient, req.body.password)
     res.json("register new user")
 
 });
 
-//Create new doctor 
-router.post("/register/doctor", async(req, res) => {
-    if (!checkValidUserName(req.body.username)) {
-        res.json("eror  new user")
-        throw new Error('eror user name')
-    }
-    const newDoctor = new Doctor(req.body)
-    const doctorRegister = Doctor.register(newDoctor, req.body.password)
-    res.json("register new doctor")
-})
 
-//Create new threapist
 router.post("/register/therapist", async(req, res) => {
     if (!checkValidUserName(req.body.username)) {
         res.json("eror  new user")
         throw new Error('eror user name')
     }
     const newTherapist = new Therapist(req.body);
-    const therapstRegister = await Therapist.register(newTherapist, req.body.password);
+    const therapist = await Therapist.register(newTherapist, req.body.password);
 
     res.json("register new therapist")
 })
 
 
-
-router.post('/login/paitent', async function(req, res, next) {
-    Paitent
+router.post('/login/patient', async function(req, res, next) {
+    Patient
         .findOne({ username: req.body.username, password: req.body.password })
-        .exec(function(err, paitent) {
+        .exec(function(err, patient) {
 
             if (err) return handleError(err);
-            if (!paitent) {
+            if (!patient) {
 
                 res.status(400).send();
             }
@@ -78,34 +66,25 @@ router.post('/login/paitent', async function(req, res, next) {
         });
 });
 
-//here we go to database and check if the doctor  exsist on the database 
-router.post("/login/doctor", function(req, res, next) {
-    Doctor
-        .findOne({ username: req.body.username }).exec(function(err, doctor) {
-            if (err) return handleError(err);
-            if (!doctor) {
-                res.json("docotor not found!");
-            }
-            res.json("doctor found succesfully!")
-        });
-});
+
 //here we get the doctor from the login screed and check if exsist in the database
-router.post("/login/therapist", (req, res, next) => {
-    passportTherapist.authenticate('local', function(err, user, info) {
-        if (err) { return next(err); }
-        if (!user) { return res.status(401).send({ success: false, message: 'authentication failed' }) };
+router.post("/login/therapist", (req, res) => {
+    Therapist
+        .findOne({ username: req.body.username, password: req.body.password })
+        .exec(function(err, patient) {
 
-        req.login(user, loginErr => {
-            if (loginErr) {
-                return next(loginErr);
+            if (err) return handleError(err);
+            if (!patient) {
+
+                res.status(400).send();
             }
-            return res.send({ success: true, message: 'authentication succeeded' });
-        });
+            //send the id to the flutter 
+            res.status(200).send()
 
-    })(req, res, next);;
+        });
 });
 
-
+/*
 //Delete User from doctor  only doctor can delete one of the user 
 router.delete("/paitent/:id", async(req, res) => {
     Paitent.findByIdAndRemove(req.params.id, function(err) {
@@ -115,6 +94,7 @@ router.delete("/paitent/:id", async(req, res) => {
         res.json("Paitnet deletd")
     })
 });
+*/
 module.exports = router;
 
 

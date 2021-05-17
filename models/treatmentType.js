@@ -1,12 +1,12 @@
 mongoose = require("mongoose");
 //const therapist = require("./stage");
 //define User Entity
-var Exercisechema = new mongoose.Schema({
+var ExerciseSchema = new mongoose.Schema({
     name: String,
     description: String,
     level: Number,
     exerciseId: Number,
-    urlAdress: String,
+    urlAddress: String,
     questions: [{
             type: String
         }]
@@ -15,7 +15,7 @@ var Exercisechema = new mongoose.Schema({
 
 var StageSchema = new mongoose.Schema({
     currentLevel: Number,
-    exerciseList: [Exercisechema],
+    exerciseList: [ExerciseSchema],
     scoreForCurrentStage: Number,
 });
 

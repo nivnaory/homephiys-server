@@ -1,25 +1,25 @@
 var express = require("express");
 const { Mongoose } = require("mongoose");
-const paitent = require("../models/paitent");
+const patient = require("../models/patient");
 const Protocol = require("../models/Protocol");
 
 var router = express.Router();
-Paitent = require("../models/paitent");
+Patient = require("../models/patient");
 
 
 
 router.get("/:username", async(req, res) => {
-    const paitent = await Paitent
+    const patient = await Paitent
         .findOne({ username: req.params.username }).populate({ path: "treatmentType", populate: { path: "protocol" } })
 
     res.json({
-        username: paitent.username,
-        password: paitent.password,
-        name: paitent.name,
-        treatmentType: paitent.treatmentType,
-        accesses: paitent.accesses,
-        protocol: paitent.treatmentType.protocol,
-        reports: paitent.reports
+        username: patient.username,
+        password: patient.password,
+        name: patient.name,
+        treatmentType: patient.treatmentType,
+        accesses: patient.accesses,
+        protocol: patient.treatmentType.protocol,
+        reports: patient.reports
 
         //reports:paitnetn.reports
     });
@@ -30,8 +30,8 @@ router.get("/:username", async(req, res) => {
 
 router.post("/:username/report", async(req, res) => {
     //create new report
-    const paitent = await Paitent.findOne({ username: req.params.username })
-    paitent.reports.push({
+    const patient = await Patient.findOne({ username: req.params.username })
+    patient.reports.push({
         stageLevel: req.body.stageLevel,
         exerciseLevel: req.body.exerciseLevel,
         score: req.body.score,
@@ -41,7 +41,7 @@ router.post("/:username/report", async(req, res) => {
 
     });
 
-    paitent.save()
+    patient.save()
 
 });
 
@@ -58,7 +58,7 @@ router.post("/:username/accesses", async(req, res) => {
 
             }
         };
-        await Paitent.updateOne({ username: req.params.username }, update);
+        await Patient.updateOne({ username: req.params.username }, update);
     }
 
 
@@ -67,23 +67,16 @@ router.post("/:username/accesses", async(req, res) => {
             [`accesses.${accessesIndex}.exerciseBool.${exerciseBoolIndex}`]: true
         }
     };
-    await Paitent.updateOne({ username: req.params.username }, update);
-
-    console.log("i'm here Final")
-
-
-
+    await Patient.updateOne({ username: req.params.username }, update);
 });
 router.put("/:username/highScore", function(req, res) {
-    Paitent
+    Patient
         .findOne({ username: req.params.username }).populate("treatmentTypes")
-        .exec(function(err, paitent) {
+        .exec(function(err, patient) {
             if (err) return handleError(err);
-            if (!paitent) {
+            if (!patient) {
                 res.status(400).send();
             }
-
-
 
         });
 })

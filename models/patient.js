@@ -29,7 +29,7 @@ var AccessSchema = new mongoose.Schema({
 
 });
 
-var PaitentSchema = new mongoose.Schema({
+var PatientSchema = new mongoose.Schema({
     username: String,
     password: String,
     name: String,
@@ -41,8 +41,8 @@ var PaitentSchema = new mongoose.Schema({
 
     accesses: [AccessSchema],
     reports: [ReportSchema],
-}, { collection: ' Paitents' });
+}, { collection: ' Patients' });
 //need to add more attr here! highRecord,ScoreList,Access
 
-PaitentSchema.plugin(passportLocalMongoose);
-module.exports = mongoose.model("Paitent", PaitentSchema);
+PatientSchema.plugin(passportLocalMongoose);
+module.exports = mongoose.model("Patient", PatientSchema);
