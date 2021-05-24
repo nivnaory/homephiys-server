@@ -50,11 +50,10 @@ router.post("/register/therapist", async(req, res) => {
 })
 
 
-router.post('/login/patient', async function(req, res, next) {
-    Patient
-        .findOne({ username: req.body.username, password: req.body.password })
+router.post('/login/patient', async function(req, res) {
+    Patient.findOne({ username: req.body.username, password: req.body.password })
         .exec(function(err, patient) {
-
+            console.log(patient);
             if (err) return handleError(err);
             if (!patient) {
 
@@ -71,10 +70,10 @@ router.post('/login/patient', async function(req, res, next) {
 router.post("/login/therapist", (req, res) => {
     Therapist
         .findOne({ username: req.body.username, password: req.body.password })
-        .exec(function(err, patient) {
+        .exec(function(err, therapist) {
 
             if (err) return handleError(err);
-            if (!patient) {
+            if (!therapist) {
 
                 res.status(400).send();
             }
