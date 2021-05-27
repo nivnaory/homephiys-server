@@ -8,7 +8,6 @@ Patient = require("../models/patient");
 
 
 router.get("/:username", async(req, res) => {
-
     const therapist = await Therapist
         .findOne({ username: req.params.username });
     if (therapist) {
@@ -21,13 +20,11 @@ router.get("/:username", async(req, res) => {
 
 
 router.get("/:username/allPatient", async(req, res) => {
-    console.log("im here");
     const allPatient = await Patient
-        .find({});
-        console.log(allPatient);
+        .find({}).populate({ path: "treatmentType", populate: { path: "protocol" } })
+        console.log(allPatient.length);
     if (allPatient) {
-        //console.log(allPatient);
-        res.sendStatus(200);
+        res.json({allPatient});
     } else {
         res.sendStatus(400);
     }

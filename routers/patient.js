@@ -2,6 +2,7 @@ var express = require("express");
 const { Mongoose } = require("mongoose");
 const patient = require("../models/patient");
 const Protocol = require("../models/Protocol");
+const treatmentType = require("../models/treatmentType");
 
 var router = express.Router();
 Patient = require("../models/patient");
@@ -9,9 +10,8 @@ Patient = require("../models/patient");
 
 
 router.get("/:username", async(req, res) => {
-    const patient = await Paitent
+    const patient = await Patient
         .findOne({ username: req.params.username }).populate({ path: "treatmentType", populate: { path: "protocol" } })
-
     res.json({
         username: patient.username,
         password: patient.password,
@@ -46,7 +46,7 @@ router.post("/:username/report", async(req, res) => {
 });
 
 router.post("/:username/accesses", async(req, res) => {
-    console.log("im here");
+    
     const accessesIndex = req.body.stageLevel;
     const exerciseBoolIndex = req.body.exerciseLevel;
     const isStageFinish = req.body.isFinished;
