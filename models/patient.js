@@ -28,6 +28,12 @@ var AccessSchema = new mongoose.Schema({
     exerciseBool: [{ type: Boolean }]
 
 });
+var TherapistNotesSchema = new mongoose.Schema({
+    stageIndex: Number,
+    noteForExercise: [{ type: String }]
+
+});
+
 
 var PatientSchema = new mongoose.Schema({
     username: String,
@@ -41,6 +47,7 @@ var PatientSchema = new mongoose.Schema({
 
     accesses: [AccessSchema],
     reports: [ReportSchema],
+    therapistNotes: [TherapistNotesSchema],
 }, { collection: ' Patients' });
 //need to add more attr here! highRecord,ScoreList,Access
 
