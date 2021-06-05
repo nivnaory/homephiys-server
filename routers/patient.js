@@ -21,6 +21,8 @@ router.get("/:username", async(req, res) => {
 });
 
 
+
+
 router.post("/:username/report", async(req, res) => {
     //create new report
     const patient = await Patient.findOne({ username: req.params.username })
@@ -35,7 +37,17 @@ router.post("/:username/report", async(req, res) => {
     });
 
     patient.save()
+});
 
+
+//get all reports From Db
+router.get("/:username/allReports", async(req, res) => {
+    var reports = await Patient.findOne({username:req.params.username},'reports');
+    if(reports)
+     res.json(reports)
+    else{
+        res.json(404);
+    }
 });
 
 router.put("/:username/accesses", async(req, res) => {
@@ -62,6 +74,9 @@ router.put("/:username/accesses", async(req, res) => {
     };
     await Patient.updateOne({ username: req.params.username }, update);
 });
+
+
+/*
 router.put("/:username/highScore", function(req, res) {
     Patient
         .findOne({ username: req.params.username }).populate("treatmentTypes")
@@ -73,8 +88,7 @@ router.put("/:username/highScore", function(req, res) {
 
         });
 })
-
-
+*/
 
 
 module.exports = router;
