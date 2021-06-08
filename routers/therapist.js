@@ -43,33 +43,4 @@ router.put("/:username/password", async(req, res) => {
     }
 });
 
-router.put("/:username/:patientUserName/Note", async(req, res) => {
-    const stageIndex = req.body.stageIndex;
-    const exerciseIndex = req.body.exerciseIndex;
-    const note = req.body.note;
-
-    const update = {
-        $set: {
-            [`therapistNotes.${stageIndex}.noteForExercise.${exerciseIndex}`]: note
-        }
-    };
-
-    const patient = await Patient.updateOne({ username: req.params.patientUserName }, update);
-    if (patient) {
-        res.sendStatus(200);
-    } else {
-        res.sendStatus(400);
-    }
-    /*
-    const patient = await Patient
-        .findOne({ username: req.params.patientUserName });
-    if (patient) {
-        patient.therapistNotes[req.body.stageIndex].noteForExercise[req.body.exerciseIndex].set(req.body.note);
-        console.log(patient);
-        res.sendStatus(200);
-    } else {
-        res.sendStatus(400);
-    }
-    */
-});
 module.exports = router;

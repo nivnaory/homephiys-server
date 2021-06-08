@@ -42,10 +42,10 @@ router.post("/:username/report", async(req, res) => {
 
 //get all reports From Db
 router.get("/:username/allReports", async(req, res) => {
-    var reports = await Patient.findOne({username:req.params.username},'reports');
-    if(reports)
-     res.json(reports)
-    else{
+    var reports = await Patient.findOne({ username: req.params.username }, 'reports');
+    if (reports)
+        res.json(reports)
+    else {
         res.json(404);
     }
 });
@@ -76,19 +76,44 @@ router.put("/:username/accesses", async(req, res) => {
 });
 
 
-/*
-router.put("/:username/highScore", function(req, res) {
-    Patient
-        .findOne({ username: req.params.username }).populate("treatmentTypes")
-        .exec(function(err, patient) {
-            if (err) return handleError(err);
-            if (!patient) {
-                res.status(400).send();
-            }
+router.put("/:username/highScore", async(req, res) => {
+    const stageIndex = req.body.stageIndex;
+    const exerciseIndex = req.body.exerciseIndex;
+    const highScore = req.body.highScore;
 
-        });
-})
-*/
+    const update = {
+        $set: {
+            [`scoreList.${stageIndex}.highScoreList.${exerciseIndex}`]: highScore
+        }
+    };
+
+    const patient = await Patient.updateOne({ username: req.params.username }, update);
+    if (patient) {
+        res.sendStatus(200);
+    } else {
+        res.sendStatus(400);
+    }
+});
+
+router.put("/:username/updateNote", async(req, res) => {
+    const stageIndex = req.body.stageIndex;
+    const exerciseIndex = req.body.exerciseIndex;
+    const note = req.body.note;
+    console.log(note)
+
+    const update = {
+        $set: {
+            [`therapistNotes.${stageIndex}.noteForExercise.${exerciseIndex}`]: note
+        }
+    };
+
+    const patient = await Patient.updateOne({ username: req.params.username }, update);
+    if (patient) {
+        res.sendStatus(200);
+    } else {
+        res.sendStatus(400);
+    }
 
 
+});
 module.exports = router;

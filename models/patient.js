@@ -34,6 +34,10 @@ var TherapistNotesSchema = new mongoose.Schema({
 
 });
 
+var ScoreSchema = new mongoose.Schema({
+    stageLevel: Number,
+    highScoreList: [{ type: Number }]
+});
 
 var PatientSchema = new mongoose.Schema({
     username: String,
@@ -48,6 +52,8 @@ var PatientSchema = new mongoose.Schema({
     accesses: [AccessSchema],
     reports: [ReportSchema],
     therapistNotes: [TherapistNotesSchema],
+    scoreList: [ScoreSchema],
+
 }, { collection: ' Patients' });
 //need to add more attr here! highRecord,ScoreList,Access
 
